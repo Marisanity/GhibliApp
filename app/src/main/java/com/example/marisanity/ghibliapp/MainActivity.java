@@ -1,11 +1,11 @@
 package com.example.marisanity.ghibliapp;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Button;
 
 import com.example.marisanity.ghibliapp.model.Film;
 import com.example.marisanity.ghibliapp.service.GhibliApiService;
@@ -24,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
     GhibliApiService apiService;
     private String type = "films";
     private Realm realm;
-    private List<Film> films = new ArrayList<Film>();
-    private Button button;
+    private List<Film> films = new ArrayList<>();
     private RecyclerView recyclerView;
     private FilmAdapter adapter;
+    private SwipeRefreshLayout swiper;
 
 
 
@@ -37,6 +37,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        swiper = (SwipeRefreshLayout) findViewById(R.id.swiper) ;
+
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updatePageContent();
+                swiper.setRefreshing(false);
+            }
+        });
 
         apiService = GhibliApplication.getInstance().getService();
 
@@ -122,6 +132,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void updatePageContent() {
+
+        realm.beginTransaction();
+        realm.delete(Film.class);
+        realm.commitTransaction();
+
+        loadPage();
+    }
+
 }
 
 

@@ -4,4 +4,5 @@
     <string name="producer">Producer: %s</string>
     <string name="release_year">Release Year: %s</string>
     <string name="rt_score">Score on Rotten Tomatoes: %s</string>
+    <string name="image1">ghibli logo</string>
 </resources>
